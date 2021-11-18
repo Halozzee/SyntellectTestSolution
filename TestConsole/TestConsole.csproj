@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EmployeeApiBusinessLayer\EmployeeApiBusinessLayer.csproj" />
     <ProjectReference Include="..\EmployeeApiDataAccessLayer\EmployeeApiDataAccessLayer.csproj" />
   </ItemGroup>
 

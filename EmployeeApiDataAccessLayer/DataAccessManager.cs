@@ -75,7 +75,7 @@ namespace EmployeeApiDataAccessLayer
                             while (reader.Read())
                             {
                                 Employee employeeToAdd = new Employee((string)reader[_lastNameTableColumnName], (string)reader[_firstNameTableColumnName],
-                                    (string)reader[_patronymicTableColumnName], DateTime.Parse((string)reader[_birthDateTableColumnName]));
+                                    (string)reader[_patronymicTableColumnName], (DateTime)reader[_birthDateTableColumnName]);
                                 employees.Add(employeeToAdd);
                             }
                         }
