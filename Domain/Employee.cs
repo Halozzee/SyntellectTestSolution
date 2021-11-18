@@ -20,5 +20,14 @@ namespace Domain
 			Patronymic = patronymic;
 			BirthDate = birthDate;
 		}
+
+		public Employee(int id, string lastName, string firstName, string patronymic, DateTime birthDate)
+		{
+			Id = id;
+			LastName = lastName;
+			FirstName = firstName;
+			Patronymic = patronymic;
+			BirthDate = birthDate;
+		}
 	}
 }

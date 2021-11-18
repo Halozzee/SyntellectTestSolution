@@ -17,10 +17,10 @@ namespace EmployeeApiDataAccessLayer
 		#region Configs
 		private static string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["MSSQLConnectionString"].ConnectionString;
         private static string _tableName = System.Configuration.ConfigurationManager.AppSettings["EmployeeTableName"];
-		#endregion
+        #endregion
 
-		#region CRUD Functions
-		public static IEnumerable<Employee> GetAllEmployees() 
+        #region CRUD Functions
+        public static IEnumerable<Employee> GetAllEmployees() 
 		{
             IList<Employee> employees = new List<Employee>();
 
@@ -39,8 +39,8 @@ namespace EmployeeApiDataAccessLayer
                         {
                             while (reader.Read())
                             {
-                                Employee employeeToAdd = new Employee((string)reader[_lastNameTableColumnName], (string)reader[_firstNameTableColumnName], 
-                                    (string)reader[_patronymicTableColumnName], DateTime.Parse((string)reader[_birthDateTableColumnName]));
+                                Employee employeeToAdd = new Employee((int)reader["id"], (string)reader[_lastNameTableColumnName], (string)reader[_firstNameTableColumnName], 
+                                    (string)reader[_patronymicTableColumnName], (DateTime)reader[_birthDateTableColumnName]);
                                 employees.Add(employeeToAdd);
                             }
                         }
@@ -91,6 +91,9 @@ namespace EmployeeApiDataAccessLayer
         }
         public static bool InsertEmployee(Employee employee) 
         {
+            if (employee.Id != -1)
+                throw new ArgumentException("This employee already has its own ID - it means that it is already stored in the DB!");
+
             try
             {
                 int insertedId = -1;
@@ -98,12 +101,13 @@ namespace EmployeeApiDataAccessLayer
                 {
                     connection.Open();
 
-                    string sqlExpression = $"INSERT INTO {_tableName} ({_lastNameTableColumnName}, {_firstNameTableColumnName}, {_patronymicTableColumnName}. {_birthDateTableColumnName}) " +
-						$"VALUES ({employee.LastName}, {employee.FirstName}, {employee.Patronymic}, {employee.BirthDate})";
+                    string sqlExpression = $"INSERT INTO {_tableName} ({_lastNameTableColumnName}, {_firstNameTableColumnName}, {_patronymicTableColumnName}, {_birthDateTableColumnName}) " +
+						$"VALUES ('{employee.LastName}', '{employee.FirstName}', '{employee.Patronymic}', '{employee.BirthDate.ToString("yyyy-MM-dd")}'); " +
+						$"SELECT CAST(scope_identity() AS int)";
                     
                     using (SqlCommand command = new SqlCommand(sqlExpression, connection))
                     {
-                        insertedId = (int)command.ExecuteScalar();
+                        insertedId = (int)(int?)command.ExecuteScalar();
                     }
                 }
 
@@ -125,8 +129,8 @@ namespace EmployeeApiDataAccessLayer
                     connection.Open();
 
                     string sqlExpression = $"UPDATE {_tableName} " +
-						$"SET {_lastNameTableColumnName}={employee.LastName}, {_firstNameTableColumnName}={employee.FirstName}, " +
-						$"{_patronymicTableColumnName}={employee.Patronymic}, {_birthDateTableColumnName}={employee.BirthDate}" +
+						$"SET {_lastNameTableColumnName}='{employee.LastName}', {_firstNameTableColumnName}='{employee.FirstName}', " +
+						$"{_patronymicTableColumnName}='{employee.Patronymic}', {_birthDateTableColumnName}='{employee.BirthDate.ToString("yyyy-MM-dd")}'" +
 						$"WHERE id={employee.Id}";
 
                     using (SqlCommand command = new SqlCommand(sqlExpression, connection))
