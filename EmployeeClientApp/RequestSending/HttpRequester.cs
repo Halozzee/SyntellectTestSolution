@@ -1,5 +1,7 @@
-﻿using Domain;
-using Domain.DataProtection;
+﻿using Domain.EmployeeObjects;
+using Domain.DataProtection.Implementations;
+using Domain.DataProtection.Interfaces;
+using Domain.EmployeeObjects;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,9 +10,8 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestConsole
+namespace EmployeeClientApp.RequestSending
 {
-
 	public class HttpRequester 
     {
         private readonly HttpClient _client;
@@ -20,6 +21,8 @@ namespace TestConsole
 		{
             _client = new HttpClient();
             _client.BaseAddress = new Uri(apiUrl);
+
+            _textCrypter = new EmptyCrypter();
         }
 
         public HttpRequester(string apiUrl, ITextCrypter textCrypter)
@@ -32,19 +35,19 @@ namespace TestConsole
 
         public WebServiceResponse SendDeleteRequest(Employee employee)
         {
-            string queryStringParameter = _textCrypter != null ? _textCrypter.Crypt(employee.Id.ToString()) : employee.Id.ToString();
+            string queryStringParameter = _textCrypter.Crypt(employee.Id.ToString());
             return SendQueryStringRequestWithMethod(System.Net.Http.HttpMethod.Delete, $"employeeId={queryStringParameter}");
         }
 
         public WebServiceResponse SendUpdateRequest(Employee employee) 
         {
-            string queryStringParameter = _textCrypter != null ? _textCrypter.Crypt(JsonConvert.SerializeObject(employee)) : JsonConvert.SerializeObject(employee);
+            string queryStringParameter = _textCrypter.Crypt(JsonConvert.SerializeObject(employee));
             return SendQueryStringRequestWithMethod(System.Net.Http.HttpMethod.Put, $"employeeJson={queryStringParameter}");
         }
 
         public WebServiceResponse SendInsertRequest(Employee employee)
         {
-            string queryStringParameter = _textCrypter != null ? _textCrypter.Crypt(JsonConvert.SerializeObject(employee)) : JsonConvert.SerializeObject(employee);
+            string queryStringParameter = _textCrypter.Crypt(JsonConvert.SerializeObject(employee));
             return SendQueryStringRequestWithMethod(System.Net.Http.HttpMethod.Post, $"employeeJson={queryStringParameter}");
         }
 
@@ -55,7 +58,7 @@ namespace TestConsole
 
         public WebServiceResponse SendGetByConditionsRequest(EmployeeFilter employeeFilter)
         {
-            string queryStringParameter = _textCrypter != null ? _textCrypter.Crypt(JsonConvert.SerializeObject(employeeFilter)) : JsonConvert.SerializeObject(employeeFilter);
+            string queryStringParameter = _textCrypter.Crypt(JsonConvert.SerializeObject(employeeFilter));
             return SendQueryStringRequestWithMethod(System.Net.Http.HttpMethod.Get, $"employeeFilterJson={queryStringParameter.Replace(" ", "")}");
         }
 

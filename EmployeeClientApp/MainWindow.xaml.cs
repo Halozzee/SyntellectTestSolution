@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Domain.DataProtection;
+using Domain.EmployeeObjects;
+using Domain.DataProtection.Implementations;
+using EmployeeClientApp.RequestSending;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +27,9 @@ namespace EmployeeClientApp
 		public MainWindow()
 		{
 			InitializeComponent();
+
+			HttpRequester httpRequester = new HttpRequester("http://localhost:17179/EmployeeApi", new SimpleCrypter());
+			EmployeeTableListView.ItemsSource = httpRequester.SendGetAllRequest().ParseResponseMessageContentToObject<IEnumerable<Employee>>();
 		}
 	}
 }

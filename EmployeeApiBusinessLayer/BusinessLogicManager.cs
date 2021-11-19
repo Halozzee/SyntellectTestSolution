@@ -1,6 +1,6 @@
-﻿using Domain;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using EmployeeApiDataAccessLayer;
+using Domain.EmployeeObjects;
 
 namespace EmployeeApiBusinessLayer
 {

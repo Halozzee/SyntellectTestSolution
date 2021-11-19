@@ -1,10 +1,10 @@
-﻿using Domain.DataProtection;
+﻿using Domain.DataProtection.Interfaces;
 using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace TestConsole
+namespace EmployeeClientApp.RequestSending
 {
 	/// <summary>
 	/// Класс предназначен для хранения информации о результате HTTP запроса.

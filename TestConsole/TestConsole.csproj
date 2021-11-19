@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\EmployeeApiBusinessLayer\EmployeeApiBusinessLayer.csproj" />
     <ProjectReference Include="..\EmployeeApiDataAccessLayer\EmployeeApiDataAccessLayer.csproj" />
+    <ProjectReference Include="..\EmployeeClientApp\EmployeeClientApp.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
-﻿using Domain;
-using System;
+﻿using System;
 using EmployeeApiBusinessLayer;
 using System.Collections.Generic;
 using System.Text;
@@ -7,6 +6,10 @@ using System.Security.Cryptography;
 using Newtonsoft.Json;
 using System.Linq;
 using Domain.DataProtection;
+using EmployeeClientApp.RequestSending;
+using Domain.DataProtection.Implementations;
+using Domain.EmployeeObjects;
+using Domain.EmployeeObjects;
 
 namespace TestConsole
 {

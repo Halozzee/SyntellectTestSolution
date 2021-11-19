@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Domain.DataProtection.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain.DataProtection
+namespace Domain.DataProtection.Implementations
 {
 	public class EmptyCrypter : ITextCrypter
 	{

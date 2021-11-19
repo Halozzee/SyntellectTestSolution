@@ -1,5 +1,4 @@
-﻿using Domain;
-using EmployeeApiBusinessLayer;
+﻿using EmployeeApiBusinessLayer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -7,7 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
-using Domain.DataProtection;
+using Domain.DataProtection.Interfaces;
+using Domain.EmployeeObjects;
+using Domain.EmployeeObjects;
 
 namespace EmployeeApiRepresentationLayer.Controllers
 {
