@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Domain.EmployeeObjects
 {
-	public class Employee
+	public class Employee : ICloneable
 	{
 		public int Id { get; set; }
 		public string LastName { get; set; }
@@ -33,6 +33,11 @@ namespace Domain.EmployeeObjects
 			FirstName = firstName;
 			Patronymic = patronymic;
 			BirthDate = birthDate;
+		}
+
+		public object Clone()
+		{
+			return new Employee(Id, LastName, FirstName, Patronymic, BirthDate);
 		}
 	}
 }

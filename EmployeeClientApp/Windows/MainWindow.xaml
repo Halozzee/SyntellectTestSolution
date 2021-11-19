@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <ListView x:Name="EmployeeTableListView" d:ItemsSource="{d:SampleData ItemCount=10}">
+        <ListView x:Name="EmployeeTableListView" d:ItemsSource="{d:SampleData ItemCount=10}" SelectionChanged="EmployeeTableListView_SelectionChanged" Margin="0,0,116,0">
             <ListView.View>
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Path = Id}" Header="ID"/>
@@ -18,5 +18,8 @@
                 </GridView>
             </ListView.View>
         </ListView>
+        <Button x:Name="DeleteEmployeeBtn" Content="Удалить" HorizontalAlignment="Left" Height="24" Margin="684,20,0,0" VerticalAlignment="Top" Width="101" Click="DeleteEmployeeBtn_Click"/>
+        <Button x:Name="EditEmployeeBtn" Content="Редактировать" HorizontalAlignment="Left" Height="24" Margin="684,44,0,0" VerticalAlignment="Top" Width="101" Click="EditEmployeeBtn_Click"/>
+        <Button x:Name="AddEmployeeBtn" Content="Создать" HorizontalAlignment="Left" Height="24" Margin="684,68,0,0" VerticalAlignment="Top" Width="101" Click="AddEmployeeBtn_Click"/>
     </Grid>
 </Window>
