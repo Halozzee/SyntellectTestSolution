@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Domain.DataProtection.Interfaces;
 using Domain.EmployeeObjects;
 using Domain.EmployeeObjects;
+using Domain;
 
 namespace EmployeeApiRepresentationLayer.Controllers
 {
@@ -28,39 +29,118 @@ namespace EmployeeApiRepresentationLayer.Controllers
 		[HttpGet]
 		public string Get(string employeeFilterJson)
 		{
-			if (!String.IsNullOrEmpty(employeeFilterJson))
+			CommunicationMessage communicationMessage = new CommunicationMessage();
+			try
 			{
-				EmployeeFilter employeeFilter = JsonConvert.DeserializeObject<EmployeeFilter>(_textCrypter.Decrypt(employeeFilterJson));
+				if (!String.IsNullOrEmpty(employeeFilterJson))
+				{
+					EmployeeFilter employeeFilter = JsonConvert.DeserializeObject<EmployeeFilter>(_textCrypter.Decrypt(employeeFilterJson));
 
-				return _textCrypter.Crypt(JsonConvert.SerializeObject(BusinessLogicManager.GetEmployeesByCondition(employeeFilter)));
+					communicationMessage.Content = JsonConvert.SerializeObject(BusinessLogicManager.GetEmployeesByCondition(employeeFilter));
+					communicationMessage.ResponseStatus = ResponseStatus.Success;
+				}
+				else
+				{
+					communicationMessage.Content = JsonConvert.SerializeObject(BusinessLogicManager.GetAllEmployees());
+					communicationMessage.ResponseStatus = ResponseStatus.Success;
+				}
 			}
-			else
+			catch (Exception ex)
 			{
-				return _textCrypter.Crypt(JsonConvert.SerializeObject(BusinessLogicManager.GetAllEmployees()));
+				communicationMessage.ResponseStatus = ResponseStatus.Exception;
+				communicationMessage.ExceptionMessage = ex.Message;
 			}
+
+			return _textCrypter.Crypt(JsonConvert.SerializeObject(communicationMessage));
 		}
 
 		[HttpPost]
 		public string Post(string employeeJson)
 		{
-			Employee employee = JsonConvert.DeserializeObject<Employee>(_textCrypter.Decrypt(employeeJson));
-			bool isSuccess = BusinessLogicManager.InsertEmployee(employee);
-			return _textCrypter.Crypt((isSuccess ? JsonConvert.SerializeObject(employee) : "error"));
+			CommunicationMessage communicationMessage = new CommunicationMessage();
+
+			try
+			{
+				Employee employee = JsonConvert.DeserializeObject<Employee>(_textCrypter.Decrypt(employeeJson));
+				bool isSuccess = BusinessLogicManager.InsertEmployee(employee);
+
+				if (isSuccess)
+				{
+					communicationMessage.Content = JsonConvert.SerializeObject(employee);
+					communicationMessage.ResponseStatus = ResponseStatus.Success;
+				}
+				else
+				{
+					communicationMessage.Content = "No exceptions accured, but no row was affected.";
+					communicationMessage.ResponseStatus = ResponseStatus.Fail;
+				}
+			}
+			catch (Exception ex)
+			{
+				communicationMessage.ResponseStatus = ResponseStatus.Exception;
+				communicationMessage.ExceptionMessage = ex.Message;
+			}
+
+			return _textCrypter.Crypt(JsonConvert.SerializeObject(communicationMessage));
 		}
 
 		[HttpPut]
 		public string Put(string employeeJson)
 		{
-			Employee employee = JsonConvert.DeserializeObject<Employee>(_textCrypter.Decrypt(employeeJson));
-			bool isSuccess = BusinessLogicManager.UpdateEmployee(employee);
-			return _textCrypter.Crypt(isSuccess.ToString());
+			CommunicationMessage communicationMessage = new CommunicationMessage();
+
+			try
+			{
+				Employee employee = JsonConvert.DeserializeObject<Employee>(_textCrypter.Decrypt(employeeJson));
+				bool isSuccess = BusinessLogicManager.UpdateEmployee(employee);
+
+				if (isSuccess)
+				{
+					communicationMessage.Content = JsonConvert.SerializeObject(isSuccess);
+					communicationMessage.ResponseStatus = ResponseStatus.Success;
+				}
+				else
+				{
+					communicationMessage.Content = "No exceptions accured, but no row was affected.";
+					communicationMessage.ResponseStatus = ResponseStatus.Fail;
+				}
+			}
+			catch (Exception ex)
+			{
+				communicationMessage.ResponseStatus = ResponseStatus.Exception;
+				communicationMessage.ExceptionMessage = ex.Message;
+			}
+
+			return _textCrypter.Crypt(JsonConvert.SerializeObject(communicationMessage));
 		}
 
 		[HttpDelete]
 		public string Delete(string employeeId) 
 		{
-			bool isSuccess = BusinessLogicManager.DeleteEmployee(Convert.ToInt32(_textCrypter.Decrypt(employeeId)));
-			return _textCrypter.Crypt(isSuccess.ToString());
+			CommunicationMessage communicationMessage = new CommunicationMessage();
+
+			try
+			{
+				bool isSuccess = BusinessLogicManager.DeleteEmployee(Convert.ToInt32(_textCrypter.Decrypt(employeeId)));
+
+				if (isSuccess)
+				{
+					communicationMessage.Content = JsonConvert.SerializeObject(isSuccess);
+					communicationMessage.ResponseStatus = ResponseStatus.Success;
+				}
+				else
+				{
+					communicationMessage.Content = "No exceptions accured, but no row was affected.";
+					communicationMessage.ResponseStatus = ResponseStatus.Fail;
+				}
+			}
+			catch (Exception ex)
+			{
+				communicationMessage.ResponseStatus = ResponseStatus.Exception;
+				communicationMessage.ExceptionMessage = ex.Message;
+			}
+
+			return _textCrypter.Crypt(JsonConvert.SerializeObject(communicationMessage));
 		}
 	}
 }

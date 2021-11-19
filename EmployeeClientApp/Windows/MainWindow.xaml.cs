@@ -33,13 +33,22 @@ namespace EmployeeClientApp
 			InitializeComponent();
 
 			httpRequester = new HttpRequester("http://localhost:17179/EmployeeApi", new SimpleCrypter());
-			employees = new ObservableCollection<Employee>(httpRequester.SendGetAllRequest().ParseResponseMessageContentToObject<IEnumerable<Employee>>());
-			EmployeeTableListView.ItemsSource = employees;
+			WebServiceResponse response = httpRequester.SendGetAllRequest();
+
+			if (response.IsSuccessful)
+			{
+				employees = new ObservableCollection<Employee>(response.CastRecievedContentToObject<IEnumerable<Employee>>());
+				EmployeeTableListView.ItemsSource = employees;
+			}
+			else
+			{
+				DisplayUnSucessfulResultInformation(response);
+			}
 		}
 
 		private void EmployeeTableListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			var t = EmployeeTableListView.SelectedItem;
+
 		}
 
 		private void DeleteEmployeeBtn_Click(object sender, RoutedEventArgs e)
@@ -47,7 +56,15 @@ namespace EmployeeClientApp
 			if (EmployeeTableListView.SelectedItem != null)
 			{
 				WebServiceResponse response = httpRequester.SendDeleteRequest((Employee)EmployeeTableListView.SelectedItem);
-				employees.Remove((Employee)EmployeeTableListView.SelectedItem);
+
+				if (response.IsSuccessful)
+				{
+					employees.Remove((Employee)EmployeeTableListView.SelectedItem);
+				}
+				else
+				{
+					DisplayUnSucessfulResultInformation(response);
+				}
 			}
 		}
 
@@ -62,7 +79,15 @@ namespace EmployeeClientApp
 				if ((bool)addOrEdit.ShowDialog())
 				{
 					WebServiceResponse response = httpRequester.SendUpdateRequest(addOrEdit.ResultObject);
-					employees[selectedItemIndex] = addOrEdit.ResultObject;
+
+					if (response.IsSuccessful)
+					{
+						employees[selectedItemIndex] = addOrEdit.ResultObject;
+					}
+					else
+					{
+						DisplayUnSucessfulResultInformation(response);
+					}
 				}
 			}
 			else
@@ -77,7 +102,32 @@ namespace EmployeeClientApp
 			if ((bool)addOrEdit.ShowDialog())
 			{
 				WebServiceResponse response = httpRequester.SendInsertRequest(addOrEdit.ResultObject);
-				employees.Add(response.ParseResponseMessageContentToObject<Employee>());
+				if (response.IsSuccessful)
+				{
+					employees.Add(response.CastRecievedContentToObject<Employee>());
+				}
+				else
+				{
+					DisplayUnSucessfulResultInformation(response);
+				}
+			}
+		}
+
+		private void DisplayUnSucessfulResultInformation(WebServiceResponse response) 
+		{
+			switch (response.ResponseStatus)
+			{
+				case Domain.ResponseStatus.None:
+					MessageBox.Show("Your result forming is incorrect. No RespnseStatus has been assigned.", "Initialization error");
+					break;
+				case Domain.ResponseStatus.Fail:
+					MessageBox.Show(response.Content, "Action fail");
+					break;
+				case Domain.ResponseStatus.Exception:
+					MessageBox.Show($"Message: {response.ExceptionString}\r\n\r\nStackTrace: {response.ExceptionStackTrace}", "Exception");
+					break;
+				default:
+					break;
 			}
 		}
 	}
