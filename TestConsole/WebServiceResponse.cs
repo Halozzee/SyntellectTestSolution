@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using Domain.DataProtection;
+using Newtonsoft.Json;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -17,18 +19,26 @@ namespace TestConsole
         /// <summary>
         /// Результат выполнения HTTP запроса
         /// </summary>
-        private HttpResponseMessage _httpResponseMessage;
+        private readonly HttpResponseMessage _httpResponseMessage;
 
-        public WebServiceResponse(HttpResponseMessage httpResponseMessage) 
+        private readonly ITextCrypter _textCrypter;
+
+        public WebServiceResponse(HttpResponseMessage httpResponseMessage, ITextCrypter textCrypter) 
         {
             _httpResponseMessage = httpResponseMessage;
+            _textCrypter = textCrypter;
         }
 
         public string ReadResponseMessageContent() 
         {
             Task<string> resultWainting = _httpResponseMessage.Content.ReadAsStringAsync();
             resultWainting.Wait();
-            return resultWainting.Result;
+            return _textCrypter == null ? resultWainting.Result : _textCrypter.Decrypt(resultWainting.Result);
+        }
+
+        public T ParseResponseMessageContentToObject<T>() 
+        {
+            return JsonConvert.DeserializeObject<T>(ReadResponseMessageContent());
         }
     }
 }

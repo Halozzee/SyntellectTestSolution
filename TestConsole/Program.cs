@@ -6,6 +6,7 @@ using System.Text;
 using System.Security.Cryptography;
 using Newtonsoft.Json;
 using System.Linq;
+using Domain.DataProtection;
 
 namespace TestConsole
 {
@@ -18,36 +19,45 @@ namespace TestConsole
 			EmployeeFilter ef = new EmployeeFilter()
 			{
 				LastNameFilter = "Z",
-				BeginBirthDateFilter = new DateTime(2000, 1, 1),
-				EndBirthDateFilter = new DateTime(2010, 1, 1)
 			};
 
-            var matches = BusinessLogicManager.GetEmployeesByCondition(ef);
+			HttpRequester httpRequester = new HttpRequester("http://localhost:17179/EmployeeApi", new SimpleCrypter());
 
             Console.Read();
 
-			HttpRequester httpRequester = new HttpRequester("http://localhost:17179/EmployeeApi");
-            //var response = httpRequester.SendQueryStringRequestWithMethod(System.Net.Http.HttpMethod.Get, $"employeeFilterJson={JsonConvert.SerializeObject(ef)}");
-            //var message = response.ReadResponseMessageContent();
+            var t = MakeRandomEmployee();
 
-            var t = matches.ElementAt(0);
+            var response = httpRequester.SendInsertRequest(t);
+			Console.WriteLine(response.ReadResponseMessageContent());
+            t = response.ParseResponseMessageContentToObject<Employee>();
 
-            t.FirstName = "Margarita";
-            t.LastName = "Tetcher";
+            t.LastName = "Zuckerberg";
+            t.FirstName = "Mark";
+            t.BirthDate = new DateTime(2900, 1, 1);
+
+            response = httpRequester.SendUpdateRequest(t);
+			Console.WriteLine(response.ReadResponseMessageContent());
+
+            response = httpRequester.SendDeleteRequest(t);
+            Console.WriteLine(response.ReadResponseMessageContent());
         }
 
         public static List<Employee> MakeRandomEmployees(int count) 
         {
             List<Employee> result = new List<Employee>();
 
-            Random random = new Random();
-
 			for (int i = 0; i < count; i++)
 			{
-                result.Add(new Employee(GenerateName(random.Next(0,10)), GenerateName(random.Next(0, 10)), GenerateName(random.Next(0, 10)), new DateTime(random.Next(1990, 2020), random.Next(0, 10), random.Next(0, 10))));
+                result.Add(MakeRandomEmployee());
             }
 
             return result;
+        }
+
+        public static Employee MakeRandomEmployee() 
+        {
+            Random random = new Random();
+            return new Employee(GenerateName(random.Next(0, 10)), GenerateName(random.Next(0, 10)), GenerateName(random.Next(0, 10)), new DateTime(random.Next(1990, 2020), random.Next(1, 10), random.Next(1, 10)));
         }
 
         public static string GenerateName(int len)

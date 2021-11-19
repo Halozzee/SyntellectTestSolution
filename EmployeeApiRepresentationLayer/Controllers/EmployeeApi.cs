@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using Domain.DataProtection;
 
 namespace EmployeeApiRepresentationLayer.Controllers
 {
@@ -15,10 +16,12 @@ namespace EmployeeApiRepresentationLayer.Controllers
 	public class EmployeeApi : ControllerBase
 	{
 		private readonly ILogger<EmployeeApi> _logger;
+		private readonly ITextCrypter _textCrypter;
 
-		public EmployeeApi(ILogger<EmployeeApi> logger)
+		public EmployeeApi(ILogger<EmployeeApi> logger, ITextCrypter textCrypter)
 		{
 			_logger = logger;
+			_textCrypter = textCrypter;
 		}
 
 		[HttpGet]
@@ -26,37 +29,37 @@ namespace EmployeeApiRepresentationLayer.Controllers
 		{
 			if (!String.IsNullOrEmpty(employeeFilterJson))
 			{
-				EmployeeFilter employeeFilter = JsonConvert.DeserializeObject<EmployeeFilter>(employeeFilterJson);
+				EmployeeFilter employeeFilter = JsonConvert.DeserializeObject<EmployeeFilter>(_textCrypter.Decrypt(employeeFilterJson));
 
-				return JsonConvert.SerializeObject(BusinessLogicManager.GetEmployeesByCondition(employeeFilter));
+				return _textCrypter.Crypt(JsonConvert.SerializeObject(BusinessLogicManager.GetEmployeesByCondition(employeeFilter)));
 			}
 			else
 			{
-				return JsonConvert.SerializeObject(BusinessLogicManager.GetAllEmployees());
+				return _textCrypter.Crypt(JsonConvert.SerializeObject(BusinessLogicManager.GetAllEmployees()));
 			}
 		}
 
 		[HttpPost]
 		public string Post(string employeeJson)
 		{
-			Employee employee = JsonConvert.DeserializeObject<Employee>(employeeJson);
+			Employee employee = JsonConvert.DeserializeObject<Employee>(_textCrypter.Decrypt(employeeJson));
 			bool isSuccess = BusinessLogicManager.InsertEmployee(employee);
-			return (isSuccess ? JsonConvert.SerializeObject(employee) : "error");
+			return _textCrypter.Crypt((isSuccess ? JsonConvert.SerializeObject(employee) : "error"));
 		}
 
 		[HttpPut]
-		public bool Put(string employeeJson)
+		public string Put(string employeeJson)
 		{
-			Employee employee = JsonConvert.DeserializeObject<Employee>(employeeJson);
+			Employee employee = JsonConvert.DeserializeObject<Employee>(_textCrypter.Decrypt(employeeJson));
 			bool isSuccess = BusinessLogicManager.UpdateEmployee(employee);
-			return isSuccess;
+			return _textCrypter.Crypt(isSuccess.ToString());
 		}
 
 		[HttpDelete]
-		public bool Delete(int employeeId) 
+		public string Delete(string employeeId) 
 		{
-			bool isSuccess = BusinessLogicManager.DeleteEmployee(employeeId);
-			return isSuccess;
+			bool isSuccess = BusinessLogicManager.DeleteEmployee(Convert.ToInt32(_textCrypter.Decrypt(employeeId)));
+			return _textCrypter.Crypt(isSuccess.ToString());
 		}
 	}
 }

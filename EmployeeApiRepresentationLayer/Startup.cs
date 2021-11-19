@@ -1,3 +1,5 @@
+using Domain;
+using Domain.DataProtection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Configuration;
 
 namespace EmployeeApiRepresentationLayer
 {
@@ -25,6 +28,15 @@ namespace EmployeeApiRepresentationLayer
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddControllers();
+
+			if (System.Configuration.ConfigurationManager.AppSettings["IsUsingEncryption"] == "True")
+			{
+				services.AddSingleton<ITextCrypter>(new SimpleCrypter());
+			}
+			else
+			{
+				services.AddSingleton<ITextCrypter>(new EmptyCrypter());
+			}
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

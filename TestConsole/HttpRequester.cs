@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.DataProtection;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,24 +14,38 @@ namespace TestConsole
 	public class HttpRequester 
     {
         private readonly HttpClient _client;
-		public HttpRequester(string urlForHttpClient)
+        private readonly ITextCrypter _textCrypter = null;
+
+		public HttpRequester(string apiUrl)
 		{
             _client = new HttpClient();
-            _client.BaseAddress = new Uri(urlForHttpClient);
+            _client.BaseAddress = new Uri(apiUrl);
         }
+
+        public HttpRequester(string apiUrl, ITextCrypter textCrypter)
+        {
+            _client = new HttpClient();
+            _client.BaseAddress = new Uri(apiUrl);
+
+            _textCrypter = textCrypter;
+        }
+
         public WebServiceResponse SendDeleteRequest(Employee employee)
         {
-            return SendQueryStringRequestWithMethod(System.Net.Http.HttpMethod.Delete, $"employeeJson={JsonConvert.SerializeObject(employee)}");
+            string queryStringParameter = _textCrypter != null ? _textCrypter.Crypt(employee.Id.ToString()) : employee.Id.ToString();
+            return SendQueryStringRequestWithMethod(System.Net.Http.HttpMethod.Delete, $"employeeId={queryStringParameter}");
         }
 
         public WebServiceResponse SendUpdateRequest(Employee employee) 
         {
-            return SendQueryStringRequestWithMethod(System.Net.Http.HttpMethod.Put, $"employeeJson={JsonConvert.SerializeObject(employee)}");
+            string queryStringParameter = _textCrypter != null ? _textCrypter.Crypt(JsonConvert.SerializeObject(employee)) : JsonConvert.SerializeObject(employee);
+            return SendQueryStringRequestWithMethod(System.Net.Http.HttpMethod.Put, $"employeeJson={queryStringParameter}");
         }
 
         public WebServiceResponse SendInsertRequest(Employee employee)
         {
-            return SendQueryStringRequestWithMethod(System.Net.Http.HttpMethod.Post, $"employeeJson={JsonConvert.SerializeObject(employee)}");
+            string queryStringParameter = _textCrypter != null ? _textCrypter.Crypt(JsonConvert.SerializeObject(employee)) : JsonConvert.SerializeObject(employee);
+            return SendQueryStringRequestWithMethod(System.Net.Http.HttpMethod.Post, $"employeeJson={queryStringParameter}");
         }
 
         public WebServiceResponse SendGetAllRequest()
@@ -40,7 +55,8 @@ namespace TestConsole
 
         public WebServiceResponse SendGetByConditionsRequest(EmployeeFilter employeeFilter)
         {
-            return SendQueryStringRequestWithMethod(System.Net.Http.HttpMethod.Get, $"employeeFilterJson={JsonConvert.SerializeObject(employeeFilter)}");
+            string queryStringParameter = _textCrypter != null ? _textCrypter.Crypt(JsonConvert.SerializeObject(employeeFilter)) : JsonConvert.SerializeObject(employeeFilter);
+            return SendQueryStringRequestWithMethod(System.Net.Http.HttpMethod.Get, $"employeeFilterJson={queryStringParameter.Replace(" ", "")}");
         }
 
         private WebServiceResponse SendQueryStringRequestWithMethod(HttpMethod method, string queryString)
@@ -51,7 +67,8 @@ namespace TestConsole
 
             Task<HttpResponseMessage> sendingTask = _client.SendAsync(httpRequestMessage);
             sendingTask.Wait();
-            return new WebServiceResponse(sendingTask.Result);
+
+            return new WebServiceResponse(sendingTask.Result, _textCrypter);
         }
     }
 }
