@@ -74,7 +74,7 @@ namespace EmployeeApiDataAccessLayer
                         {
                             while (reader.Read())
                             {
-                                Employee employeeToAdd = new Employee((string)reader[_lastNameTableColumnName], (string)reader[_firstNameTableColumnName],
+                                Employee employeeToAdd = new Employee((int)reader["id"], (string)reader[_lastNameTableColumnName], (string)reader[_firstNameTableColumnName],
                                     (string)reader[_patronymicTableColumnName], (DateTime)reader[_birthDateTableColumnName]);
                                 employees.Add(employeeToAdd);
                             }
@@ -171,6 +171,32 @@ namespace EmployeeApiDataAccessLayer
                 throw;
             }
         }
-		#endregion
-	}
+
+        public static bool DeleteEmployee(int employeeId)
+        {
+            try
+            {
+                int deletedRows = -1;
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string sqlExpression = $"DELETE FROM {_tableName} " +
+                        $"WHERE id={employeeId}";
+
+                    using (SqlCommand command = new SqlCommand(sqlExpression, connection))
+                    {
+                        deletedRows = command.ExecuteNonQuery();
+                    }
+                }
+
+                return deletedRows > 0;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        #endregion
+    }
 }

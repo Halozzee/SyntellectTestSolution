@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace EmployeeApiBusinessLayer
+namespace Domain
 {
 	public class EmployeeFilter
 	{
 		public string LastNameFilter { get; set; }
 		public string FirstNameFilter { get; set; }
 		public string PatronymicFilter { get; set; }
-		public DateTime BeginDateFilter { get; set; }
-		public DateTime EndDateFilter { get; set; }
+		public DateTime BeginBirthDateFilter { get; set; }
+		public DateTime EndBirthDateFilter { get; set; }
 	}
 }

@@ -2,6 +2,10 @@
 using System;
 using EmployeeApiBusinessLayer;
 using System.Collections.Generic;
+using System.Text;
+using System.Security.Cryptography;
+using Newtonsoft.Json;
+using System.Linq;
 
 namespace TestConsole
 {
@@ -9,15 +13,28 @@ namespace TestConsole
 	{
 		static void Main(string[] args)
 		{
-			var employees = BusinessLogicManager.GetAllEmployees();
+			//var employees = BusinessLogicManager.GetAllEmployees();
 
-            EmployeeApiBusinessLayer.EmployeeFilter ef = new EmployeeApiBusinessLayer.EmployeeFilter()
-            {
-                LastNameFilter = "Z"
-            };
+			EmployeeFilter ef = new EmployeeFilter()
+			{
+				LastNameFilter = "Z",
+				BeginBirthDateFilter = new DateTime(2000, 1, 1),
+				EndBirthDateFilter = new DateTime(2010, 1, 1)
+			};
 
             var matches = BusinessLogicManager.GetEmployeesByCondition(ef);
-		}
+
+            Console.Read();
+
+			HttpRequester httpRequester = new HttpRequester("http://localhost:17179/EmployeeApi");
+            //var response = httpRequester.SendQueryStringRequestWithMethod(System.Net.Http.HttpMethod.Get, $"employeeFilterJson={JsonConvert.SerializeObject(ef)}");
+            //var message = response.ReadResponseMessageContent();
+
+            var t = matches.ElementAt(0);
+
+            t.FirstName = "Margarita";
+            t.LastName = "Tetcher";
+        }
 
         public static List<Employee> MakeRandomEmployees(int count) 
         {
@@ -51,8 +68,8 @@ namespace TestConsole
             }
 
             return Name;
-
-
         }
+
+       
     }
 }

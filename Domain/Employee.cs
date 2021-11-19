@@ -12,6 +12,11 @@ namespace Domain
 		public string Patronymic { get; set; }
 		public DateTime BirthDate { get; set; }
 
+		public Employee()
+		{
+
+		}
+
 		public Employee(string lastName, string firstName, string patronymic, DateTime birthDate)
 		{
 			Id = -1;
