@@ -27,6 +27,9 @@ namespace EmployeeClientApp.Windows
 
 		private void SaveBtn_Click(object sender, RoutedEventArgs e)
 		{
+			if (!DataValidation())
+				return;
+
 			if (IsEditingExisting)
 			{
 				ResultObject = (Employee)DataContext;
@@ -39,8 +42,24 @@ namespace EmployeeClientApp.Windows
 			this.Close();
 		}
 
-		private void DatePicker_CalendarClosed(object sender, RoutedEventArgs e)
+		private bool DataValidation() 
 		{
+			if (LastNameTextBox.Text == "")
+			{
+				MessageBox.Show("Не указана фамилия", "Укажите фамилию");
+				return false;
+			}
+			if (FirstNameTextBox.Text == "")
+			{
+				MessageBox.Show("Не указано имя", "Укажите имя");
+				return false;
+			}
+			if (BirthDatePicker.SelectedDate == null)
+			{
+				MessageBox.Show("Дата не выбрана", "Выберите дату");
+				return false;
+			}
+			return true;
 		}
 	}
 }

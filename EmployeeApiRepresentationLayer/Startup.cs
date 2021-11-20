@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using System.Configuration;
 using Domain.DataProtection.Interfaces;
 using Domain.DataProtection.Implementations;
+using System.IO;
+using EmployeeApiRepresentationLayer.Logging;
 
 namespace EmployeeApiRepresentationLayer
 {
@@ -41,12 +43,23 @@ namespace EmployeeApiRepresentationLayer
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
 		{
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
 			}
+
+			string currentDirPath = Directory.GetCurrentDirectory();
+
+			if (!Directory.Exists("Logs"))
+				Directory.CreateDirectory("Logs");
+
+			loggerFactory.AddFile(Path.Combine(currentDirPath, $"Logs\\LogFile {DateTime.Now.ToString().Replace(":","_")}.txt"));
+
+			var logger = loggerFactory.CreateLogger("FileLogger");
+
+			logger.LogInformation("Application is starting...");
 
 			app.UseRouting();
 

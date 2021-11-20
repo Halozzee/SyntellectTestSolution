@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EmployeeClientApp.Windows"
         mc:Ignorable="d"
-        Title="AddOrEditEmployee" Height="290" Width="192">
+        Title="Добавление сотрудника" Height="290" Width="192">
     <Grid>
         <Label Content="Фамилия" HorizontalAlignment="Left" Margin="55,10,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="LastNameTextBox" HorizontalAlignment="Left" Margin="14,36,0,0" TextWrapping="Wrap" Text="{Binding Path=LastName}" VerticalAlignment="Top" Width="150"/>

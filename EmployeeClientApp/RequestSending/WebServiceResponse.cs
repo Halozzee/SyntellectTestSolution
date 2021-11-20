@@ -56,18 +56,6 @@ namespace EmployeeClientApp.RequestSending
                     return null;
             }
         }
-
-        public string ExceptionStackTrace
-		{
-			get 
-            {
-                if (this.CommunicationMessage.ResponseStatus == ResponseStatus.Exception)
-                    return this.CommunicationMessage.ExeceptionStackTrace;
-                else
-                    return null;
-            }
-		}
-
         public T CastRecievedContentToObject<T>() 
         {
             return JsonConvert.DeserializeObject<T>(Content);

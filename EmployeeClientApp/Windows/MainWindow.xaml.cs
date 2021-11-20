@@ -46,11 +46,6 @@ namespace EmployeeClientApp
 			}
 		}
 
-		private void EmployeeTableListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-
-		}
-
 		private void DeleteEmployeeBtn_Click(object sender, RoutedEventArgs e)
 		{
 			if (EmployeeTableListView.SelectedItem != null)
@@ -74,8 +69,12 @@ namespace EmployeeClientApp
 			{
 				int selectedItemIndex = EmployeeTableListView.SelectedIndex;
 				AddOrEditEmployee addOrEdit = new AddOrEditEmployee();
+
+				addOrEdit.Title = "Редактирование сотрудника";
+				addOrEdit.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 				addOrEdit.IsEditingExisting = true;
 				addOrEdit.DataContext = (EmployeeTableListView.SelectedItem as Employee).Clone();
+
 				if ((bool)addOrEdit.ShowDialog())
 				{
 					WebServiceResponse response = httpRequester.SendUpdateRequest(addOrEdit.ResultObject);
@@ -99,6 +98,10 @@ namespace EmployeeClientApp
 		private void AddEmployeeBtn_Click(object sender, RoutedEventArgs e)
 		{
 			AddOrEditEmployee addOrEdit = new AddOrEditEmployee();
+
+			addOrEdit.Title = "Добавление сотрудника";
+			addOrEdit.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
 			if ((bool)addOrEdit.ShowDialog())
 			{
 				WebServiceResponse response = httpRequester.SendInsertRequest(addOrEdit.ResultObject);
@@ -118,13 +121,13 @@ namespace EmployeeClientApp
 			switch (response.ResponseStatus)
 			{
 				case Domain.ResponseStatus.None:
-					MessageBox.Show("Your result forming is incorrect. No RespnseStatus has been assigned.", "Initialization error");
+					MessageBox.Show("Формирование результата на стороне сервера происходит некорректно. Domain.ResponseStatus не инициализирован (выбран None).", "Ошибка инициализации");
 					break;
 				case Domain.ResponseStatus.Fail:
-					MessageBox.Show(response.Content, "Action fail");
+					MessageBox.Show(response.Content, "Действие на стороне сервера не было выполнено.");
 					break;
 				case Domain.ResponseStatus.Exception:
-					MessageBox.Show($"Message: {response.ExceptionString}\r\n\r\nStackTrace: {response.ExceptionStackTrace}", "Exception");
+					MessageBox.Show($"Сообщение ошибки: {response.ExceptionString}", "Ошибка");
 					break;
 				default:
 					break;

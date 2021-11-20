@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Domain.DataProtection.Interfaces;
 using Domain.EmployeeObjects;
-using Domain.EmployeeObjects;
 using Domain;
 
 namespace EmployeeApiRepresentationLayer.Controllers
@@ -30,25 +29,30 @@ namespace EmployeeApiRepresentationLayer.Controllers
 		public string Get(string employeeFilterJson)
 		{
 			CommunicationMessage communicationMessage = new CommunicationMessage();
+			string decryptedEmployeeFilterJson = employeeFilterJson != null ? _textCrypter.Decrypt(employeeFilterJson) : "";
+
 			try
 			{
 				if (!String.IsNullOrEmpty(employeeFilterJson))
 				{
-					EmployeeFilter employeeFilter = JsonConvert.DeserializeObject<EmployeeFilter>(_textCrypter.Decrypt(employeeFilterJson));
+					EmployeeFilter employeeFilter = JsonConvert.DeserializeObject<EmployeeFilter>(decryptedEmployeeFilterJson);
 
 					communicationMessage.Content = JsonConvert.SerializeObject(BusinessLogicManager.GetEmployeesByCondition(employeeFilter));
 					communicationMessage.ResponseStatus = ResponseStatus.Success;
+					_logger.LogInformation("GetRequestSelectWithFilter", decryptedEmployeeFilterJson);
 				}
 				else
 				{
 					communicationMessage.Content = JsonConvert.SerializeObject(BusinessLogicManager.GetAllEmployees());
 					communicationMessage.ResponseStatus = ResponseStatus.Success;
+					_logger.LogInformation("GetRequestSelectWithNoFilter");
 				}
 			}
 			catch (Exception ex)
 			{
-				communicationMessage.ResponseStatus = ResponseStatus.Exception;
 				communicationMessage.ExceptionMessage = ex.Message;
+				communicationMessage.ResponseStatus = ResponseStatus.Exception;
+				_logger.LogError(ex, "GetRequestError", decryptedEmployeeFilterJson);
 			}
 
 			return _textCrypter.Crypt(JsonConvert.SerializeObject(communicationMessage));
@@ -58,27 +62,31 @@ namespace EmployeeApiRepresentationLayer.Controllers
 		public string Post(string employeeJson)
 		{
 			CommunicationMessage communicationMessage = new CommunicationMessage();
+			string decryptedEmployeeJson = _textCrypter.Decrypt(employeeJson);
 
 			try
 			{
-				Employee employee = JsonConvert.DeserializeObject<Employee>(_textCrypter.Decrypt(employeeJson));
+				Employee employee = JsonConvert.DeserializeObject<Employee>(decryptedEmployeeJson);
 				bool isSuccess = BusinessLogicManager.InsertEmployee(employee);
 
 				if (isSuccess)
 				{
 					communicationMessage.Content = JsonConvert.SerializeObject(employee);
 					communicationMessage.ResponseStatus = ResponseStatus.Success;
+					_logger.LogInformation("PostRequestSuccess", decryptedEmployeeJson, communicationMessage.Content);
 				}
 				else
 				{
 					communicationMessage.Content = "No exceptions accured, but no row was affected.";
 					communicationMessage.ResponseStatus = ResponseStatus.Fail;
+					_logger.LogInformation("PostRequestNoRowAffected", decryptedEmployeeJson, communicationMessage.Content);
 				}
 			}
 			catch (Exception ex)
 			{
-				communicationMessage.ResponseStatus = ResponseStatus.Exception;
 				communicationMessage.ExceptionMessage = ex.Message;
+				communicationMessage.ResponseStatus = ResponseStatus.Exception;
+				_logger.LogError(ex, "PostRequestError", decryptedEmployeeJson);
 			}
 
 			return _textCrypter.Crypt(JsonConvert.SerializeObject(communicationMessage));
@@ -88,27 +96,31 @@ namespace EmployeeApiRepresentationLayer.Controllers
 		public string Put(string employeeJson)
 		{
 			CommunicationMessage communicationMessage = new CommunicationMessage();
+			string decryptedEmployeeJson = _textCrypter.Decrypt(employeeJson);
 
 			try
 			{
-				Employee employee = JsonConvert.DeserializeObject<Employee>(_textCrypter.Decrypt(employeeJson));
+				Employee employee = JsonConvert.DeserializeObject<Employee>(decryptedEmployeeJson);
 				bool isSuccess = BusinessLogicManager.UpdateEmployee(employee);
 
 				if (isSuccess)
 				{
 					communicationMessage.Content = JsonConvert.SerializeObject(isSuccess);
 					communicationMessage.ResponseStatus = ResponseStatus.Success;
+					_logger.LogInformation("PutRequestSuccess", decryptedEmployeeJson);
 				}
 				else
 				{
 					communicationMessage.Content = "No exceptions accured, but no row was affected.";
 					communicationMessage.ResponseStatus = ResponseStatus.Fail;
+					_logger.LogInformation("PutRequestNoRowAffected", decryptedEmployeeJson);
 				}
 			}
 			catch (Exception ex)
 			{
-				communicationMessage.ResponseStatus = ResponseStatus.Exception;
 				communicationMessage.ExceptionMessage = ex.Message;
+				communicationMessage.ResponseStatus = ResponseStatus.Exception;
+				_logger.LogError(ex, "PutRequestError", decryptedEmployeeJson);
 			}
 
 			return _textCrypter.Crypt(JsonConvert.SerializeObject(communicationMessage));
@@ -118,26 +130,30 @@ namespace EmployeeApiRepresentationLayer.Controllers
 		public string Delete(string employeeId) 
 		{
 			CommunicationMessage communicationMessage = new CommunicationMessage();
+			string decryptedEmployeeId = _textCrypter.Decrypt(employeeId);
 
 			try
 			{
-				bool isSuccess = BusinessLogicManager.DeleteEmployee(Convert.ToInt32(_textCrypter.Decrypt(employeeId)));
+				bool isSuccess = BusinessLogicManager.DeleteEmployee(Convert.ToInt32(decryptedEmployeeId));
 
 				if (isSuccess)
 				{
 					communicationMessage.Content = JsonConvert.SerializeObject(isSuccess);
 					communicationMessage.ResponseStatus = ResponseStatus.Success;
+					_logger.LogInformation("DeleteRequestSuccess", decryptedEmployeeId);
 				}
 				else
 				{
 					communicationMessage.Content = "No exceptions accured, but no row was affected.";
 					communicationMessage.ResponseStatus = ResponseStatus.Fail;
+					_logger.LogInformation("DeleteRequestNoRowAffected", decryptedEmployeeId);
 				}
 			}
 			catch (Exception ex)
 			{
-				communicationMessage.ResponseStatus = ResponseStatus.Exception;
 				communicationMessage.ExceptionMessage = ex.Message;
+				communicationMessage.ResponseStatus = ResponseStatus.Exception;
+				_logger.LogError(ex, "DeleteRequestError", decryptedEmployeeId);
 			}
 
 			return _textCrypter.Crypt(JsonConvert.SerializeObject(communicationMessage));
