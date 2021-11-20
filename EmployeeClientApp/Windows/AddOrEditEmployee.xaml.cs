@@ -23,6 +23,9 @@ namespace EmployeeClientApp.Windows
 		public AddOrEditEmployee()
 		{
 			InitializeComponent();
+
+			if(!IsEditingExisting)
+				BirthDatePicker.SelectedDate = DateTime.Now;
 		}
 
 		private void SaveBtn_Click(object sender, RoutedEventArgs e)

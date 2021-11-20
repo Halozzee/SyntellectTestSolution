@@ -38,8 +38,8 @@ namespace EmployeeApiRepresentationLayer.Controllers
 					EmployeeFilter employeeFilter = JsonConvert.DeserializeObject<EmployeeFilter>(decryptedEmployeeFilterJson);
 
 					communicationMessage.Content = JsonConvert.SerializeObject(BusinessLogicManager.GetEmployeesByCondition(employeeFilter));
-					communicationMessage.ResponseStatus = ResponseStatus.Success;
 					_logger.LogInformation("GetRequestSelectWithFilter", decryptedEmployeeFilterJson);
+					communicationMessage.ResponseStatus = ResponseStatus.Success;
 				}
 				else
 				{
@@ -52,7 +52,7 @@ namespace EmployeeApiRepresentationLayer.Controllers
 			{
 				communicationMessage.ExceptionMessage = ex.Message;
 				communicationMessage.ResponseStatus = ResponseStatus.Exception;
-				_logger.LogError(ex, "GetRequestError", decryptedEmployeeFilterJson);
+				_logger.LogError(ex, $"GetRequestError \t StackTrace: {ex.StackTrace}", decryptedEmployeeFilterJson);
 			}
 
 			return _textCrypter.Crypt(JsonConvert.SerializeObject(communicationMessage));

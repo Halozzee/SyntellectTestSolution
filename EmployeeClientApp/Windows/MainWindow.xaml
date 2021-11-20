@@ -7,19 +7,29 @@
         mc:Ignorable="d"
         Title="База данных сотрудников" Height="450" Width="800">
     <Grid>
-        <ListView x:Name="EmployeeTableListView" d:ItemsSource="{d:SampleData ItemCount=10}" Margin="0,0,116,0">
+        <ListView x:Name="EmployeeTableListView" d:ItemsSource="{d:SampleData ItemCount=10}" Margin="0,0,136,91" SelectionMode="Single">
             <ListView.View>
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Path = Id}" Header="ID"/>
                     <GridViewColumn DisplayMemberBinding="{Binding Path = LastName}" Header="Фамилия"/>
                     <GridViewColumn DisplayMemberBinding="{Binding Path = FirstName}" Header="Имя"/>
                     <GridViewColumn DisplayMemberBinding="{Binding Path = Patronymic}" Header="Отчество"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path = BirthDate}"  Header="Дата рождения"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path = BirthDate, StringFormat={}{0:dd.MM.yyyy}}"  Header="Дата рождения"/>
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button x:Name="DeleteEmployeeBtn" Content="Удалить" HorizontalAlignment="Left" Height="24" Margin="684,20,0,0" VerticalAlignment="Top" Width="101" Click="DeleteEmployeeBtn_Click"/>
-        <Button x:Name="EditEmployeeBtn" Content="Редактировать" HorizontalAlignment="Left" Height="24" Margin="684,44,0,0" VerticalAlignment="Top" Width="101" Click="EditEmployeeBtn_Click"/>
-        <Button x:Name="AddEmployeeBtn" Content="Создать" HorizontalAlignment="Left" Height="24" Margin="684,68,0,0" VerticalAlignment="Top" Width="101" Click="AddEmployeeBtn_Click"/>
+        <Button x:Name="DeleteEmployeeBtn" Content="Удалить" HorizontalAlignment="Left" Height="24" Margin="669,128,0,0" VerticalAlignment="Top" Width="101" Click="DeleteEmployeeBtn_Click"/>
+        <Button x:Name="EditEmployeeBtn" Content="Редактировать" HorizontalAlignment="Left" Height="24" Margin="669,99,0,0" VerticalAlignment="Top" Width="101" Click="EditEmployeeBtn_Click"/>
+        <Button x:Name="AddEmployeeBtn" Content="Создать" HorizontalAlignment="Left" Height="24" Margin="669,70,0,0" VerticalAlignment="Top" Width="101" Click="AddEmployeeBtn_Click"/>
+        <Button x:Name="RefreshEmployeesBtn" Content="Обновить" HorizontalAlignment="Left" Height="24" Margin="669,23,0,0" VerticalAlignment="Top" Width="101" Click="RefreshEmployeesBtn_Click"/>
+        <Button x:Name="FilterEmployeesBtn" Content="Фильтр" HorizontalAlignment="Left" Height="24" Margin="669,291,0,0" VerticalAlignment="Top" Width="101" Click="FilterEmployeesBtn_Click" />
+        <Button x:Name="PrevPaginationBtn" Content="Предыдущая страница" HorizontalAlignment="Left" Margin="0,323,0,0" VerticalAlignment="Top" Click="PrevPaginationBtn_Click"/>
+        <Button x:Name="NextPaginationBtn" Content="Следующая страница" HorizontalAlignment="Left" Margin="525,323,0,0" VerticalAlignment="Top" Click="NextPaginationBtn_Click"/>
+        <Label x:Name="PaginationLabel" Content="Страница" HorizontalAlignment="Left" Margin="306,342,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="PaginationElementCountComboBox" HorizontalAlignment="Left" Height="25" Margin="295,322,0,0" VerticalAlignment="Top" Width="92" SelectionChanged="PaginationElementCountComboBox_SelectionChanged">
+            <ListViewItem Content="10 строк"/>
+            <ListViewItem Content="20 строк"/>
+            <ListViewItem Content="30 строк"/>
+        </ComboBox>
     </Grid>
 </Window>

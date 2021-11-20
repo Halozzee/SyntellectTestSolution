@@ -12,10 +12,10 @@ namespace EmployeeApiBusinessLayer
         }
         public static IEnumerable<Employee> GetEmployeesByCondition(EmployeeFilter employeeFilter)
 		{
-            SqlWhereConditionStringBuilder sqlWhereConditionStringBuilder = new SqlWhereConditionStringBuilder(employeeFilter);
-            string condition = sqlWhereConditionStringBuilder.Build();
+            SqlConditionStringBuilder sqlConditionStringBuilder = new SqlConditionStringBuilder(employeeFilter);
+            string conditions = sqlConditionStringBuilder.Build();
 
-            return DataAccessManager.GetEmployeesByCondition(condition);
+            return DataAccessManager.GetEmployeesByCondition(conditions);
 		}
 
 		public static bool InsertEmployee(Employee employee)

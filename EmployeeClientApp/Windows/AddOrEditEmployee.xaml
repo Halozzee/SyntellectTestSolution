@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EmployeeClientApp.Windows"
         mc:Ignorable="d"
-        Title="Добавление сотрудника" Height="290" Width="192">
+        Title="Добавление и" Height="308" Width="192" ResizeMode="NoResize">
     <Grid>
         <Label Content="Фамилия" HorizontalAlignment="Left" Margin="55,10,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="LastNameTextBox" HorizontalAlignment="Left" Margin="14,36,0,0" TextWrapping="Wrap" Text="{Binding Path=LastName}" VerticalAlignment="Top" Width="150"/>
@@ -13,7 +13,8 @@
         <TextBox x:Name="FirstNameTextBox" HorizontalAlignment="Left" Margin="14,86,0,0" TextWrapping="Wrap" Text="{Binding Path=FirstName}" VerticalAlignment="Top" Width="150"/>
         <Label Content="Отчество" HorizontalAlignment="Left" Margin="59,109,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="PatronymicTextBox" HorizontalAlignment="Left" Margin="14,135,0,0" TextWrapping="Wrap" Text="{Binding Path=Patronymic}" VerticalAlignment="Top" Width="150"/>
-        <DatePicker x:Name="BirthDatePicker" Margin="14,171,10,56" SelectedDate="{Binding Path=BirthDate}"></DatePicker>
-        <Button x:Name="SaveBtn" Content="Сохранить" HorizontalAlignment="Center" Margin="0,218,0,0" VerticalAlignment="Top" Width="136" Height="29" Click="SaveBtn_Click"/>
+        <DatePicker x:Name="BirthDatePicker" Margin="14,190,10,56" SelectedDate="{Binding Path=BirthDate}"></DatePicker>
+        <Button x:Name="SaveBtn" Content="Сохранить" HorizontalAlignment="Center" Margin="0,241,0,0" VerticalAlignment="Top" Width="136" Height="29" Click="SaveBtn_Click"/>
+        <Label Content="Дата рождения" HorizontalAlignment="Left" Margin="42,158,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

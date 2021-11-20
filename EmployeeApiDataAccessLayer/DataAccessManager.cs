@@ -54,7 +54,7 @@ namespace EmployeeApiDataAccessLayer
                 throw;
             }
         }
-        public static IEnumerable<Employee> GetEmployeesByCondition(string whereCondition)
+        public static IEnumerable<Employee> GetEmployeesByCondition(string conditions)
         {
             IList<Employee> employees = new List<Employee>();
 
@@ -65,8 +65,7 @@ namespace EmployeeApiDataAccessLayer
                     connection.Open();
 
                     string sqlExpression = "SELECT * " +
-						$"FROM {_tableName} " +
-						$"WHERE {whereCondition}";
+                        $"FROM {_tableName} {conditions}";
 
                     using (SqlCommand command = new SqlCommand(sqlExpression, connection))
                     {

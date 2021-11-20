@@ -6,10 +6,10 @@ using System.Text;
 
 namespace EmployeeApiBusinessLayer
 {
-	public class SqlWhereConditionStringBuilder
+	public class SqlConditionStringBuilder
 	{
 		private readonly EmployeeFilter _employeeFilter;
-		public SqlWhereConditionStringBuilder(EmployeeFilter employeeFilter) 
+		public SqlConditionStringBuilder(EmployeeFilter employeeFilter) 
 		{
 			_employeeFilter = employeeFilter;
 		}
@@ -43,19 +43,19 @@ namespace EmployeeApiBusinessLayer
 			return conditionList;
 		}
 
-		private string FormDateRangeStringCondition(string fieldName, DateTime beginRangeDate, DateTime endRangeDate)
+		private string FormDateRangeStringCondition(string fieldName, DateTime beginRangeDate, DateTime endRangeDate, string dateFormatString = "yyyy.MM.dd")
 		{
 			if (beginRangeDate != DateTime.MinValue && endRangeDate != DateTime.MinValue)
 			{
-				return $"{fieldName} between '{beginRangeDate}' and '{endRangeDate}'";
+				return $"{fieldName} between '{beginRangeDate.ToString(dateFormatString)}' and '{endRangeDate.ToString(dateFormatString)}'";
 			}
 			else if (beginRangeDate != DateTime.MinValue)
 			{
-				return $"{fieldName} >= '{beginRangeDate}'";
+				return $"{fieldName} >= '{beginRangeDate.ToString(dateFormatString)}'";
 			}
 			else if (endRangeDate != DateTime.MinValue)
 			{
-				return $"{fieldName} <= '{endRangeDate}'";
+				return $"{fieldName} <= '{endRangeDate.ToString(dateFormatString)}'";
 			}
 
 			return null;
@@ -86,10 +86,38 @@ namespace EmployeeApiBusinessLayer
 			return sb.ToString().ToLower();
 		}
 
-		public string Build()
+		private string FormPaginationCondition() 
+		{
+			if (_employeeFilter.PaginationData.HasConditionToWorkWith)
+			{
+				return $"ORDER BY id OFFSET {_employeeFilter.PaginationData.PaginationIndex * _employeeFilter.PaginationData.PaginationCount} " +
+					$"ROWS FETCH NEXT {_employeeFilter.PaginationData.PaginationCount} ROWS ONLY";
+			}
+			return "";
+		}
+
+		private string BuildWhereCondition()
 		{
 			List<string> conditionList = FormConditionList();
-			return String.Join(" and ", conditionList);
+
+			if (conditionList.Count > 0)
+			{
+				return $"WHERE {String.Join(" and ", conditionList)}";
+			}
+			else
+			{
+				return "";
+			}
+		}
+
+		private string BuildPaginationCondition()
+		{
+			return FormPaginationCondition();
+		}
+
+		public string Build() 
+		{
+			return $" {BuildWhereCondition()} {BuildPaginationCondition()}";
 		}
 	}
 }
