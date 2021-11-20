@@ -37,6 +37,7 @@ namespace EmployeeClientApp
 			InitializeComponent();
 
 			_httpRequester = new HttpRequester("http://localhost:17179/EmployeeApi", new SimpleCrypter());
+			WebServiceResponse response = _httpRequester.SendGetAllRequest();
 
 			PaginationElementCountComboBox.SelectedIndex = 0;
 			Paginate(0);
@@ -242,7 +243,7 @@ namespace EmployeeClientApp
 			Random random = new Random();
 			for (int i = 0; i < count; i++)
 			{
-				result.Add(new Employee(GenerateName(random.Next(0, 10)), GenerateName(random.Next(0, 10)), GenerateName(random.Next(0, 10)), new DateTime(random.Next(1990, 2020), random.Next(1, 12), random.Next(1, 27))));
+				result.Add(new Employee(GenerateName(random.Next(2, 8)), GenerateName(random.Next(2, 8)), GenerateName(random.Next(2, 8)), new DateTime(random.Next(1990, 2020), random.Next(1, 12), random.Next(1, 27))));
 			}
 			return result;
 		}
@@ -252,8 +253,18 @@ namespace EmployeeClientApp
 			string[] consonants = { "b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "l", "n", "p", "q", "r", "s", "sh", "zh", "t", "v", "w", "x" };
 			string[] vowels = { "a", "e", "i", "o", "u", "ae", "y" };
 			string Name = "";
+
+			int cntr = 1;
+
 			Name += consonants[r.Next(consonants.Length)].ToUpper();
 			Name += vowels[r.Next(vowels.Length)];
+
+			while (cntr++ != len)
+			{
+				Name += consonants[r.Next(consonants.Length)];
+				Name += vowels[r.Next(vowels.Length)];
+			}
+
 			return Name;
 		}
 

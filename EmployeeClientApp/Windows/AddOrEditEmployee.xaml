@@ -14,7 +14,7 @@
         <Label Content="Отчество" HorizontalAlignment="Left" Margin="59,109,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="PatronymicTextBox" HorizontalAlignment="Left" Margin="14,135,0,0" TextWrapping="Wrap" Text="{Binding Path=Patronymic}" VerticalAlignment="Top" Width="150"/>
         <DatePicker x:Name="BirthDatePicker" Margin="14,190,10,56" SelectedDate="{Binding Path=BirthDate}"></DatePicker>
-        <Button x:Name="SaveBtn" Content="Сохранить" HorizontalAlignment="Center" Margin="0,241,0,0" VerticalAlignment="Top" Width="136" Height="29" Click="SaveBtn_Click"/>
+        <Button x:Name="SaveBtn" Content="Сохранить" HorizontalAlignment="Center" Margin="0,229,0,0" VerticalAlignment="Top" Width="136" Height="29" Click="SaveBtn_Click"/>
         <Label Content="Дата рождения" HorizontalAlignment="Left" Margin="42,158,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>
