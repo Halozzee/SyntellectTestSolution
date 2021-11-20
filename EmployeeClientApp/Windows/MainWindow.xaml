@@ -10,7 +10,7 @@
         <ListView x:Name="EmployeeTableListView" d:ItemsSource="{d:SampleData ItemCount=10}" Margin="0,0,136,91" SelectionMode="Single">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path = Id}" Header="ID"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path = Id}" Header="ID" Width="50"/>
                     <GridViewColumn DisplayMemberBinding="{Binding Path = LastName}" Header="Фамилия"/>
                     <GridViewColumn DisplayMemberBinding="{Binding Path = FirstName}" Header="Имя"/>
                     <GridViewColumn DisplayMemberBinding="{Binding Path = Patronymic}" Header="Отчество"/>

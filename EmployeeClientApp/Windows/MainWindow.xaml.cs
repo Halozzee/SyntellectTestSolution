@@ -18,6 +18,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using EmployeeClientApp.Windows;
+using Domain.DataProtection.Interfaces;
 
 namespace EmployeeClientApp
 {
@@ -35,10 +36,22 @@ namespace EmployeeClientApp
 		public MainWindow()
 		{
 			InitializeComponent();
+			ConfigureAppAndStart();
+		}
 
-			_httpRequester = new HttpRequester("http://localhost:17179/EmployeeApi", new SimpleCrypter());
-			WebServiceResponse response = _httpRequester.SendGetAllRequest();
+		private void ConfigureAppAndStart()
+		{
+			ITextCrypter textCrypter;
+			if (System.Configuration.ConfigurationManager.AppSettings["IsUsingEncryption"] == "True")
+			{
+				textCrypter = new SimpleCrypter();
+			}
+			else
+			{
+				textCrypter = new EmptyCrypter();
+			}
 
+			_httpRequester = new HttpRequester(System.Configuration.ConfigurationManager.AppSettings["ApiUrl"], textCrypter);
 			PaginationElementCountComboBox.SelectedIndex = 0;
 			Paginate(0);
 		}
