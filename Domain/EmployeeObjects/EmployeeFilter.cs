@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Domain.EmployeeObjects
 {
+	/// <summary>
+	/// Класс представляющий фильтр сотрудников.
+	/// </summary>
 	public class EmployeeFilter
 	{
 		public string LastNameFilter { get; set; }
@@ -18,6 +21,9 @@ namespace Domain.EmployeeObjects
 			PaginationData = new PaginationData();
 		}
 
+		/// <summary>
+		/// Есть хотя бы одно условие для фильтрации.
+		/// </summary>
 		public bool HasAtleastOneFieldToFilterWith
 		{
 			get 

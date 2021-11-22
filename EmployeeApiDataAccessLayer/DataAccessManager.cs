@@ -7,6 +7,8 @@ namespace EmployeeApiDataAccessLayer
 {
 	public static class DataAccessManager
 	{
+        //Имена колонок в таблице. Менят можно, если они меняются в таблице. Добавлять можно, но нужно обновлять тогда и в CRUD методах.
+        //Если изменять придется больше 3 раз => сделать через рефлексию (поиск по этому классу по приватным константам).
 		#region TableColumnNames
 		private const string _lastNameTableColumnName = "last_name";
 		private const string _firstNameTableColumnName = "first_name";
@@ -14,12 +16,17 @@ namespace EmployeeApiDataAccessLayer
 		private const string _birthDateTableColumnName = "birth_date";
 		#endregion
 
+        //Конфигурации из файла App.Config
 		#region Configs
 		private static string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["MSSQLConnectionString"].ConnectionString;
         private static string _tableName = System.Configuration.ConfigurationManager.AppSettings["EmployeeTableName"];
         #endregion
 
         #region CRUD Functions
+        /// <summary>
+        /// Получить список всех сотрудников.
+        /// </summary>
+        /// <returns>Возвращает список всех сотрудников.</returns>
         public static IEnumerable<Employee> GetAllEmployees() 
 		{
             IList<Employee> employees = new List<Employee>();
@@ -54,6 +61,12 @@ namespace EmployeeApiDataAccessLayer
                 throw;
             }
         }
+
+        /// <summary>
+        /// Получить список всех сотрудников по строке условия.
+        /// </summary>
+        /// <param name="conditions">Строка условия, формируемая через инстанцию SqlConditionStringBuilder метод Build(). Можно указывать и свою строку.</param>
+        /// <returns>Отфильтрованный список сотрудников.</returns>
         public static IEnumerable<Employee> GetEmployeesByCondition(string conditions)
         {
             IList<Employee> employees = new List<Employee>();
@@ -88,10 +101,16 @@ namespace EmployeeApiDataAccessLayer
                 throw;
             }
         }
+        /// <summary>
+        /// Вставить сотрудника в БД.
+        /// </summary>
+        /// <param name="employee">Сотрудник для вставки.</param>
+        /// <returns>True - хотя бы одна строка изменилась, False - ни одна строка не была изменена.</returns>
+        /// <exception cref="ArgumentException">Неправильно указан ID сотрудника. Если он не -1, значит сотрудник уже был вставлен в таблицу.</exception>
         public static bool InsertEmployee(Employee employee) 
         {
             if (employee.Id != -1)
-                throw new ArgumentException("This employee already has its own ID - it means that it is already stored in the DB!");
+                throw new ArgumentException("У этого сотрудника уже есть свой Id - это значит, что он уже был вставлен в таблицу.");
 
             try
             {
@@ -118,6 +137,11 @@ namespace EmployeeApiDataAccessLayer
                 throw;
             }
         }
+        /// <summary>
+        /// Обновить данные о сотруднике.
+        /// </summary>
+        /// <param name="employee">Сотрудник, данные которого будут обновлены. Должен быть правильный Id!</param>
+        /// <returns>True - хотя бы одна строка изменилась, False - ни одна строка не была изменена.</returns>
         public static bool UpdateEmployee(Employee employee)
         {
             try
@@ -145,6 +169,11 @@ namespace EmployeeApiDataAccessLayer
                 throw;
             }
         }
+        /// <summary>
+        /// Удалить сотрудника в БД. 
+        /// </summary>
+        /// <param name="employee">Сотрудник, данные которого будут удалены. Должен быть правильный Id!</param>
+        /// <returns>True - хотя бы одна строка изменилась, False - ни одна строка не была изменена.</returns>
         public static bool DeleteEmployee(Employee employee)
         {
             try
@@ -171,6 +200,11 @@ namespace EmployeeApiDataAccessLayer
             }
         }
 
+        /// <summary>
+        /// Удалить сотрудника в БД. 
+        /// </summary>
+        /// <param name="employeeId">Id сотрудника, данные которого будут удалены. Должен быть правильный Id!</param>
+        /// <returns>True - хотя бы одна строка изменилась, False - ни одна строка не была изменена.</returns>
         public static bool DeleteEmployee(int employeeId)
         {
             try

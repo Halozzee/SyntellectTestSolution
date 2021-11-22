@@ -32,6 +32,7 @@ namespace EmployeeApiRepresentationLayer
 		{
 			services.AddControllers();
 
+			//Обработка значения шифрования в конфигурации
 			if (System.Configuration.ConfigurationManager.AppSettings["IsUsingEncryption"] == "True")
 			{
 				services.AddSingleton<ITextCrypter>(new SimpleCrypter());

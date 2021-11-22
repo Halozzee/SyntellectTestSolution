@@ -1,7 +1,6 @@
 ﻿using Domain.EmployeeObjects;
 using Domain.DataProtection.Implementations;
 using Domain.DataProtection.Interfaces;
-using Domain.EmployeeObjects;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace EmployeeClientApp.RequestSending
 {
+    /// <summary>
+    /// Класс для взаимодействования с сервером. Отправляет и принимает данные.
+    /// </summary>
 	public class HttpRequester 
     {
         private readonly HttpClient _client;

@@ -21,9 +21,5 @@
     <ProjectReference Include="..\EmployeeApiBusinessLayer\EmployeeApiBusinessLayer.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Logs\" />
-  </ItemGroup>
-
 
 </Project>

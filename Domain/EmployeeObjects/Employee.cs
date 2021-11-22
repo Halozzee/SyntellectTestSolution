@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Domain.EmployeeObjects
 {
+	/// <summary>
+	/// Класс, представляющий сотрудника
+	/// </summary>
 	public class Employee : ICloneable
 	{
 		public int Id { get; set; }
