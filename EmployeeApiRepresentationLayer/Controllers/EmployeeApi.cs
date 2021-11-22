@@ -135,10 +135,12 @@ namespace EmployeeApiRepresentationLayer.Controllers
 		public string Put(string employeeJson)
 		{
 			CommunicationMessage communicationMessage = new CommunicationMessage();
-			string decryptedEmployeeJson = _textCrypter.Decrypt(employeeJson);
+			string decryptedEmployeeJson = "";
 
 			try
 			{
+				decryptedEmployeeJson = _textCrypter.Decrypt(employeeJson);
+
 				Employee employee = JsonConvert.DeserializeObject<Employee>(decryptedEmployeeJson);
 				bool isSuccess = BusinessLogicManager.UpdateEmployee(employee);
 
@@ -181,10 +183,11 @@ namespace EmployeeApiRepresentationLayer.Controllers
 		public string Delete(string employeeId) 
 		{
 			CommunicationMessage communicationMessage = new CommunicationMessage();
-			string decryptedEmployeeId = _textCrypter.Decrypt(employeeId);
+			string decryptedEmployeeId = "";
 
 			try
 			{
+				decryptedEmployeeId = _textCrypter.Decrypt(employeeId);
 				bool isSuccess = BusinessLogicManager.DeleteEmployee(Convert.ToInt32(decryptedEmployeeId));
 
 				if (isSuccess)
